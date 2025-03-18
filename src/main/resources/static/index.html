@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mini Twitter</title>
+    <link href="https://fonts.googleapis.com/css2?family=Bubbler+One&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: #78c9ff;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+        h1 {
+            font-family: 'Bubbler One', sans-serif;
+            color: #0777f8;
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+        .form-container, .tweet-list {
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 500px;
+            margin-bottom: 20px;
+        }
+        .form-container textarea {
+            width: 100%;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            margin-bottom: 10px;
+        }
+        .form-container button {
+            background: #1DA1F2;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 700;
+        }
+        .tweet-item {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+        .tweet-item:last-child {
+            border-bottom: none;
+        }
+        .logo {
+            width: 200px; /* Ajusta el tamaño según sea necesario */
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Mini Twitter</h1>
+    <div class="form-container">
+        <h2>Nuevo Tweet</h2>
+        <textarea id="content" rows="4" maxlength="140" placeholder="¿Qué está pasando?"></textarea>
+        <button onclick="postTweet()">Publicar</button>
+    </div>
+    <div class="tweet-list" id="tweetList">
+        <h2>Lista de Tweets</h2>
+        <!-- Aquí se insertarán dinámicamente los tweets -->
+    </div>
+
+    <script>
+        const baseUrl = window.location.origin;
+
+        function postTweet() {
+            const content = document.getElementById('content').value;
+
+            if (!content) {
+                alert('El contenido es obligatorio.');
+                return;
+            }
+
+            if (content.length > 140) {
+                alert('El contenido no puede exceder los 140 caracteres.');
+                return;
+            }
+
+            const tweet = { content: content };
+
+            fetch(`${baseUrl}/tweets`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(tweet)
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert('Tweet publicado correctamente');
+                loadTweets();
+                document.getElementById('content').value = '';
+            })
+            .catch(error => console.error('Error al publicar el tweet:', error));
+        }
+
+        function loadTweets() {
+            fetch(`${baseUrl}/tweets`)
+                .then(response => response.json())
+                .then(tweets => {
+                    const tweetList = document.getElementById('tweetList');
+                    tweetList.innerHTML = '<h2>Lista de Tweets</h2>'; // Limpiar la lista antes de agregar nuevos tweets
+
+                    tweets.forEach(tweet => {
+                        const tweetItem = document.createElement('div');
+                        tweetItem.className = 'tweet-item';
+                        tweetItem.textContent = tweet.content;
+                        tweetList.appendChild(tweetItem);
+                    });
+                })
+                .catch(error => console.error('Error al cargar los tweets:', error));
+        }
+
+        // Cargar los tweets al cargar la página
+        window.onload = loadTweets;
+    </script>
+</body>
+</html>
