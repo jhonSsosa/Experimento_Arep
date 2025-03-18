@@ -24,7 +24,7 @@
         }
         .form-container, .tweet-list {
             background: #fff;
-            padding: 20px;
+            padding: 40px;
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             width: 100%;
@@ -104,16 +104,9 @@
         </div>
     </div>
 
-    <div id="greetingModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeModal('greetingModal')">&times;</span>
-            <h2 id="greetingMessage"></h2>
-            <button onclick="closeModal('greetingModal')">Continuar</button>
-        </div>
-    </div>
-
     <h1>Mini Twitter</h1>
-    <div class="form-container">
+    <h2 id="greetingMessage" style="display: none;"></h2>
+    <div class="form-container" id="tweetSection" style="display: none;">
         <h2>Nuevo Tweet</h2>
         <input type="text" id="username" placeholder="Nombre de usuario" readonly>
         <textarea id="content" rows="4" maxlength="140" placeholder="¿Qué está pasando?"></textarea>
@@ -189,8 +182,9 @@
             }
             document.getElementById('username').value = username;
             document.getElementById('greetingMessage').textContent = `Hola, ${username}!`;
+            document.getElementById('greetingMessage').style.display = 'block';
+            document.getElementById('tweetSection').style.display = 'block';
             closeModal('nameModal');
-            openModal('greetingModal');
         }
 
         function openModal(modalId) {
