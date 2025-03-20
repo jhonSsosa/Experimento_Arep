@@ -2,9 +2,9 @@
 
 ## Integrantes
 
-- Integrante 1
-- Integrante 2
-- Integrante 3
+- Paula Natalia Paez Vega
+- Miguel Camilo Tellez Avila
+- John Sebastian Sosa
 
 ## Descripción del Proyecto
 
