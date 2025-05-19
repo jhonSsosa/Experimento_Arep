@@ -4,202 +4,320 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mini Twitter</title>
+    <title>Analiza tu proyecto</title>
     <link href="https://fonts.googleapis.com/css2?family=Bubbler+One&display=swap" rel="stylesheet">
     <style>
         body {
             font-family: 'Roboto', sans-serif;
-            background: #78c9ff;
-            color: #333;
+            background: #fad4a2; /* fondo gris azulado suave */
+            color: #2e2e2e;
             display: flex;
             flex-direction: column;
             align-items: center;
             padding: 20px;
         }
+
         h1 {
             font-family: 'Bubbler One', sans-serif;
-            color: #0777f8;
+            color: #8a641e; /* Azul profundo */
             font-size: 48px;
             margin-bottom: 20px;
         }
-        .form-container, .tweet-list {
-            background: #fff;
+
+        .form-container {
+            background: #f0f4f8; /* gris claro suave */
             padding: 40px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            border: 1px solid #cbd5e1;
             width: 100%;
             max-width: 500px;
             margin-bottom: 20px;
         }
-        .form-container textarea, .form-container input {
+
+        .form-container textarea,
+        .form-container input {
             width: 100%;
-            padding: 10px;
-            border-radius: 5px;
-            border: 1px solid #ddd;
-            margin-bottom: 10px;
+            padding: 12px;
+            border-radius: 6px;
+            border: 1px solid #d1d5db;
+            margin-bottom: 15px;
+            font-size: 15px;
         }
+
         .form-container button {
-            background: #1DA1F2;
+            background: #3b82f6;
             color: #fff;
             border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
+            padding: 12px 24px;
+            border-radius: 6px;
             cursor: pointer;
-            font-weight: 700;
+            font-weight: 600;
+            transition: background 0.3s ease;
         }
+
+        .form-container button:hover {
+            background: #2563eb;
+        }
+
+        .tweet-list {
+            background: #f0f4f8;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            border: 1px solid #cbd5e1;
+            width: 100%;
+            max-width: 500px;
+            margin-bottom: 20px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
         .tweet-item {
             padding: 10px;
-            border-bottom: 1px solid #ddd;
+            border-bottom: 1px solid #e2e8f0;
+            word-wrap: break-word;
+            white-space: pre-wrap;
         }
+
         .tweet-item:last-child {
             border-bottom: none;
         }
-        .logo {
-            width: 200px; /* Ajusta el tamaño según sea necesario */
+
+        .response-container {
+            background: #f0f4f8;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            border: 1px solid #cbd5e1;
+            width: 100%;
+            max-width: 500px;
             margin-bottom: 20px;
+            max-height: 400px;
+            overflow-y: auto;
         }
+
+        .response-container pre {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            margin: 0;
+            font-size: 14px;
+            color: #2e2e2e;
+        }
+
         .modal {
             display: none;
             position: fixed;
-            z-index: 1;
+            z-index: 10;
             left: 0;
             top: 0;
             width: 100%;
             height: 100%;
             overflow: auto;
-            background-color: rgb(0,0,0);
-            background-color: rgba(0,0,0,0.4);
-            padding-top: 60px;
+            background-color: rgba(0, 0, 0, 0.4);
         }
+
         .modal-content {
-            background-color: #fefefe;
-            margin: 5% auto;
-            padding: 20px;
-            border: 1px solid #888;
-            width: 80%;
-            max-width: 300px;
-            text-align: center;
+            background-color: #f0f4f8;
+            margin: 15% auto;
+            padding: 30px;
+            border: 1px solid #cbd5e1;
+            width: 90%;
+            max-width: 400px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
+
+        .modal-content h2 {
+            margin-top: 0;
+            font-size: 22px;
+            color: #1e3a8a;
+        }
+
+        .modal-content input {
+            width: 100%;
+            padding: 10px;
+            margin: 15px 0;
+            border-radius: 6px;
+            border: 1px solid #d1d5db;
+        }
+
+        .modal-content button {
+            background-color: #3b82f6;
+            color: #ffffff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .modal-content button:hover {
+            background-color: #2563eb;
+        }
+
         .close {
-            color: #aaa;
             float: right;
             font-size: 28px;
             font-weight: bold;
-        }
-        .close:hover,
-        .close:focus {
-            color: black;
-            text-decoration: none;
+            color: #333;
             cursor: pointer;
         }
     </style>
-</head>
+
+
 <body>
-    <div id="nameModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeModal('nameModal')">&times;</span>
-            <h2>Ingrese su nombre</h2>
-            <input type="text" id="modalUsername" placeholder="Nombre de usuario">
-            <button onclick="submitName()">Enviar</button>
-        </div>
+
+<div id="nameModal" class="modal">
+    <div class="modal-content">
+        <h2>Ingrese su nombre</h2>
+        <input type="text" id="modalUsername" placeholder="Nombre de usuario">
+        <button onclick="submitName()">Enviar</button>
     </div>
+</div>
 
-    <h1>Mini Twitter</h1>
-    <h2 id="greetingMessage" style="display: none;"></h2>
-    <div class="form-container" id="tweetSection" style="display: none;">
-        <h2>Nuevo Tweet</h2>
-        <input type="text" id="username" placeholder="Nombre de usuario" readonly>
-        <textarea id="content" rows="4" maxlength="140" placeholder="¿Qué está pasando?"></textarea>
-        <button onclick="postTweet()">Publicar</button>
-    </div>
-    <div class="tweet-list" id="tweetList">
-        <h2>Lista de Tweets</h2>
-        <!-- Aquí se insertarán dinámicamente los tweets -->
-    </div>
+<h1>Evalua tu proyecto</h1>
+<h2 id="greetingMessage" style="display: none;"></h2>
 
-    <script>
-        const baseUrl = window.location.origin;
+<div class="form-container" id="tweetSection" style="display: none;">
+    <h2>Consultalo aqui!</h2>
+    <input type="text" id="username" placeholder="Nombre de usuario" readonly>
+    <textarea id="content" rows="4" placeholder="Ingrese su proyecto"></textarea>
+    <button onclick="postTweet()">Publicar</button>
+</div>
 
-        function postTweet() {
-            const content = document.getElementById('content').value;
-            const username = document.getElementById('username').value;
+<div class="response-container" id="responseContainer" style="display: none;">
+    <h2>Respuesta del Modelo:</h2>
+    <pre id="responseText"></pre>
+</div>
 
-            if (!content) {
-                alert('El contenido es obligatorio.');
-                return;
-            }
+<div class="tweet-list" id="tweetList">
+    <h2>Textos consultados</h2>
+</div>
 
-            if (content.length > 140) {
-                alert('El contenido no puede exceder los 140 caracteres.');
-                return;
-            }
+<script>
+    const baseUrl = window.location.origin;
 
-            if (!username) {
-                alert('El nombre de usuario es obligatorio.');
-                return;
-            }
+    function postTweet() {
+        const content = document.getElementById('content').value;
+        const username = document.getElementById('username').value;
 
-            const tweet = { text: content, username: username };
+        if (!content) {
+            alert('El contenido es obligatorio.');
+            return;
+        }
 
-            fetch(`${baseUrl}/twitter/createPost`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(tweet)
-            })
+        if (!username) {
+            alert('El nombre de usuario es obligatorio.');
+            return;
+        }
+
+        const tweet = { text: content, username: username };
+
+        fetch(`${baseUrl}/twitter/createPost`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(tweet)
+        })
             .then(response => response.json())
             .then(data => {
-                alert('Tweet publicado correctamente');
                 loadTweets();
                 document.getElementById('content').value = '';
+
+                fetch(`${baseUrl}/analizar/`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ texto: content })
+                })
+                    .then(response => {
+                        if (!response.ok) throw new Error('Error en la respuesta del servidor');
+                        return response.json();
+                    })
+                    .then(data => {
+                        if (data) {
+                            const explicacionMadurez = data.madurez_tecnica?.explicacion || "No disponible";
+                            const explicacionViabilidad = data.viabilidad_aparente?.explicacion || "No disponible";
+                            const mejoras = data.mejoras_sugeridas?.length
+                                ? data.mejoras_sugeridas.map(m => `- ${m}`).join("\n")
+                                : "Ninguna sugerida.";
+                            const faltantes = data.secciones_faltantes?.length
+                                ? data.secciones_faltantes.map(f => `- ${f}`).join("\n")
+                                : "Ninguna.";
+
+                            const output =
+                                `Madurez Técnica: ${data.madurez_tecnica?.calificacion || "No evaluada"}
+${explicacionMadurez}
+
+Viabilidad Técnica: ${data.viabilidad_aparente?.calificacion || "No evaluada"}
+${explicacionViabilidad}
+
+Mejoras Sugeridas:
+${mejoras}
+
+Secciones Faltantes:
+${faltantes}
+
+Conclusión:
+${data.conclusion || "No se proporcionó."}
+`;
+                            document.getElementById('responseText').textContent = output;
+                            document.getElementById('responseContainer').style.display = 'block';
+                        } else {
+                            document.getElementById('responseText').textContent = 'La respuesta del análisis está vacía o incompleta.';
+                            document.getElementById('responseContainer').style.display = 'block';
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error al analizar el tweet:', error);
+                        document.getElementById('responseText').textContent = 'Error al analizar el tweet.';
+                        document.getElementById('responseContainer').style.display = 'block';
+                    });
             })
             .catch(error => console.error('Error al publicar el tweet:', error));
+    }
+
+    function loadTweets() {
+        fetch(`${baseUrl}/twitter/getPosts`)
+            .then(response => response.json())
+            .then(tweets => {
+                const tweetList = document.getElementById('tweetList');
+                tweetList.innerHTML = '<h2>Textos analizados </h2>';
+                tweets.forEach(tweet => {
+                    const tweetItem = document.createElement('div');
+                    tweetItem.className = 'tweet-item';
+                    tweetItem.textContent = `${tweet.user.username}: ${tweet.text}`;
+                    tweetList.appendChild(tweetItem);
+                });
+            })
+            .catch(error => console.error('Error al cargar los tweets:', error));
+    }
+
+    function submitName() {
+        const username = document.getElementById('modalUsername').value;
+        if (!username) {
+            alert('El nombre de usuario es obligatorio.');
+            return;
         }
+        document.getElementById('username').value = username;
+        document.getElementById('greetingMessage').textContent = `Bienvenido, ${username}!`;
+        document.getElementById('greetingMessage').style.display = 'block';
+        document.getElementById('tweetSection').style.display = 'block';
+        closeModal('nameModal');
+    }
 
-        function loadTweets() {
-            fetch(`${baseUrl}/twitter/getPosts`)
-                .then(response => response.json())
-                .then(tweets => {
-                    const tweetList = document.getElementById('tweetList');
-                    tweetList.innerHTML = '<h2>Lista de Tweets</h2>'; // Limpiar la lista antes de agregar nuevos tweets
+    function openModal(modalId) {
+        document.getElementById(modalId).style.display = "block";
+    }
 
-                    tweets.forEach(tweet => {
-                        const tweetItem = document.createElement('div');
-                        tweetItem.className = 'tweet-item';
-                        tweetItem.textContent = `${tweet.user.username}: ${tweet.text}`;
-                        tweetList.appendChild(tweetItem);
-                    });
-                })
-                .catch(error => console.error('Error al cargar los tweets:', error));
-        }
+    function closeModal(modalId) {
+        document.getElementById(modalId).style.display = "none";
+    }
 
-        function submitName() {
-            const username = document.getElementById('modalUsername').value;
-            if (!username) {
-                alert('El nombre de usuario es obligatorio.');
-                return;
-            }
-            document.getElementById('username').value = username;
-            document.getElementById('greetingMessage').textContent = `Hola, ${username}!`;
-            document.getElementById('greetingMessage').style.display = 'block';
-            document.getElementById('tweetSection').style.display = 'block';
-            closeModal('nameModal');
-        }
+    window.onload = function() {
+        openModal('nameModal');
+        loadTweets();
+    };
+</script>
 
-        function openModal(modalId) {
-            document.getElementById(modalId).style.display = "block";
-        }
-
-        function closeModal(modalId) {
-            document.getElementById(modalId).style.display = "none";
-        }
-
-        // Mostrar el modal de nombre al cargar la página
-        window.onload = function() {
-            openModal('nameModal');
-            loadTweets();
-        };
-    </script>
 </body>
 </html>

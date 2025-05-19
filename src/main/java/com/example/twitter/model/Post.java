@@ -1,20 +1,20 @@
 package com.example.twitter.model;
 
+import java.util.Map;
+
 public class Post {
     private String id;
     private String text;
     private User user;
+    private Map<String, Object> analisisCompleto; // Nuevo campo
 
-
-    public Post(String id, String text, User user) {
-        if(text.length() > 140){
-            throw new IllegalArgumentException("No puede excederse de más de 140 caracteres");
-        }
+    public Post(String id, String text, User user, String etiqueta, Double confianza) {
         this.id = id;
         this.text = text;
         this.user = user;
     }
 
+    // Getters y Setters
     public String getId() {
         return this.id;
     }
@@ -38,5 +38,13 @@ public class Post {
     public void setUser(User user) {
         this.user = user;
     }
-    
+
+
+    public Map<String, Object> getAnalisisCompleto() {
+        return analisisCompleto;
+    }
+
+    public void setAnalisisCompleto(Map<String, Object> analisisCompleto) {
+        this.analisisCompleto = analisisCompleto;
+    }
 }
